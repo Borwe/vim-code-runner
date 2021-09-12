@@ -8,6 +8,9 @@
 " Documentation: type ":help CodeRunner"
 "
 " Version:       1.0
+if get(g:, 'vim_code_runner', 0)
+  finish
+endif
 
 let g:CodeRunnerSourceFile=expand("<sfile>")
 
@@ -27,3 +30,5 @@ if !hasmapto("<Plug>CodeRunner")
     nmap <silent><leader>B <Plug>CodeRunner
 endif
 
+
+let g:vim_code_runner = 1
