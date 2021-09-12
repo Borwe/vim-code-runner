@@ -193,12 +193,11 @@ function! s:CodeRunner()
         return
     endif
 
-    echom cmd
+    call CodeRunner#Message("Running ".cmd)
+
     let winName = "CodeRunner.out"
     let options= {"cwd":getcwd(),"term_rows":g:code_runner_output_window_size, "term_name":winName}
-
-    exec "belowright terminal ++shell ++rows=".g:code_runner_output_window_size." ".cmd.""
-
+    let term_window = term_start(CodeRunner#GetShell().cmd,options)
 endfunction
 " }}}
 
