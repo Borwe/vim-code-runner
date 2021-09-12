@@ -118,7 +118,7 @@ function! s:ParseCommandAssociationList()
     let s:Dict = {}
     if exists('g:CodeRunnerCommandMap')
         for key in keys(g:CodeRunnerCommandMap)
-            let s:Dict[key] = CodeRunner#Trim(g:CodeRunnerCommandMap[key])
+            let s:Dict[key] = trim(g:CodeRunnerCommandMap[key])
         endfor
     endif
     let filePath = s:GetCommandConfigFile()
@@ -138,7 +138,7 @@ function! s:ParseCommandAssociationList()
     let lineCounter = 0
     for strLine in strLines
         let lineCounter += 1
-        let strLine = CodeRunner#Trim(strLine)
+        let strLine = trim(strLine)
         if empty(strLine) || strLine[0] == "\""
             continue
         endif
@@ -149,8 +149,8 @@ function! s:ParseCommandAssociationList()
             continue
         endif
 
-        let sourceType = CodeRunner#Trim(items[0])
-        let exeCommand = CodeRunner#Trim(items[1])
+        let sourceType = trim(items[0])
+        let exeCommand = trim(items[1])
 
         if empty(sourceType) || empty(exeCommand)
             call CodeRunner#Warning("Invalid strLine: ".strLine)
