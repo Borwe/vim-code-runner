@@ -22,7 +22,7 @@ if !exists("g:code_runner_output_window_size")
 endif
 
 
-command! CodeRunner :call CodeRunner#CodeRunner()
+command! -complete=custom,CodeRunner#GetTypes -nargs=1 CodeRunner :call CodeRunner#CodeRunner()
 
 nnoremap <silent> <plug>CodeRunner :call CodeRunner#CodeRunner()<CR>
 if !hasmapto("<Plug>CodeRunner")

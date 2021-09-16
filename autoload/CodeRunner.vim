@@ -1,5 +1,3 @@
-
-
 function! CodeRunner#Error(message) abort
     echohl ErrorMsg | echomsg "[CodeRunner] Error: ".a:message | echohl None
 endfunction
@@ -87,6 +85,18 @@ function! CodeRunner#GetCommandConfigFile() abort
         call CodeRunner#Error("    Please fix your configuration to suppress these messages!")
     endif
     return l:CodeRunnerCommandConfigFile
+endfunction
+
+function! CodeRunner#GetTypes(ArgLead, CmdLine, CursorPos) abort
+    let dicts = CodeRunner#ParseCommandAssociationList()
+    let keys = keys(dicts)
+
+    let result_of_types = ""
+    for key in keys
+        let result_of_types = result_of_types . "\n" . key
+    endfor
+
+    return result_of_types
 endfunction
 
 
