@@ -22,7 +22,6 @@ if !exists("g:code_runner_output_window_size")
 endif
 
 
-
 command! CodeRunner :call CodeRunner#CodeRunner()
 
 nnoremap <silent> <plug>CodeRunner :call CodeRunner#CodeRunner()<CR>
