@@ -18,15 +18,6 @@ function! CodeRunner#BackToForwardSlash(arg) abort
 endfunction
 
 
-function! CodeRunner#GetShell() abort
-    if has('win32')
-        return &shell." /c "
-    else
-        return &shell." -c"
-    endif
-endfunction
-
-
 function! CodeRunner#GetCommand(type) abort
     let cmdMaps = CodeRunner#ParseCommandAssociationList()
     if has_key(cmdMaps, a:type)
@@ -158,7 +149,14 @@ function! CodeRunner#ParseCommandAssociationList() abort
 endfunction
 
 
-function! CodeRunner#CodeRunner() abort
+function! CodeRunner#CodeRunner(...) abort
+    let type_passed = get(a:, 0, 0)
+    if type_passed == 0
+        call CodeRunner#Message("No type passed")
+    else
+        call CodeRunner#Message("Type passed is ".a:1)
+    endif
+
     if g:code_runner_save_before_execute == 1
         write
     endif
@@ -171,6 +169,6 @@ function! CodeRunner#CodeRunner() abort
     call CodeRunner#Message("Running ".cmd)
 
     let winName = "CodeRunner.out"
-    let options= {"cwd":getcwd(),"term_rows":g:code_runner_output_window_size, "term_name":winName}
-    let term_window = term_start(CodeRunner#GetShell().cmd,options)
+    exec "belowright terminal ++shell ++rows=".g:code_runner_output_window_size." ".cmd.""
 endfunction
+

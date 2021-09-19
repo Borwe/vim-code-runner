@@ -22,12 +22,12 @@ if !exists("g:code_runner_output_window_size")
 endif
 
 
-command! -complete=custom,CodeRunner#GetTypes -nargs=1 CodeRunner :call CodeRunner#CodeRunner()
+command! -complete=custom,CodeRunner#GetTypes -nargs=? CodeRunner :call CodeRunner#CodeRunner("<args>")
 
-nnoremap <silent> <plug>CodeRunner :call CodeRunner#CodeRunner()<CR>
-if !hasmapto("<Plug>CodeRunner")
-    nmap <silent><leader>B <Plug>CodeRunner
-endif
+""nnoremap <silent> <plug>CodeRunner :call CodeRunner#CodeRunner()<CR>
+""if !hasmapto("<Plug>CodeRunner")
+""    nmap <silent><leader>B <Plug>CodeRunner
+""endif
 
 
 let g:vim_code_runner = 1
