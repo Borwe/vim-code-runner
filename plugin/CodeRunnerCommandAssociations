@@ -15,7 +15,8 @@ javascript :: node $fileName
 java :: javac $fileName && java $fileNameWithoutExt && rm $fileNameWithoutExt.class
 c :: clang $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt && rm ./$fileNameWithoutExt
 cpp :: clang++ -std=c++11 $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt && rm ./$fileNameWithoutExt
-python :: python $fileName
+""python :: python $fileName
+python :: neofetch 
 perl :: perl $fileName
 ruby :: ruby $fileName
 sh :: bash $fileName

@@ -12,6 +12,12 @@ function! CodeRunner#Warning(message) abort
     echohl WarningMsg | echomsg "[CodeRunner] Warning: ".a:message | echohl None
 endfunction
 
+function! CodeRunner#GetCmdPrefix() abort
+    let cmd = &shell
+    let cmdflag = &shellcmdflag
+    return cmd." ".cmdflag." "
+endfunction
+
 
 function! CodeRunner#BackToForwardSlash(arg) abort
     return substitute(a:arg, '\\', '/', 'g')
@@ -40,7 +46,7 @@ function! CodeRunner#GetCommand(type) abort
     let strCmd = substitute(strCmd, '$fileName',fileName,'gC')
     let strCmd = substitute(strCmd, '$dir', dirPath,'gC')
 
-    return strCmd
+    return CodeRunner#GetCmdPrefix().'"'.strCmd.'"'
 endfunction
 
 
@@ -151,15 +157,11 @@ endfunction
 
 function! CodeRunner#CodeRunner(...) abort
     let type_passed = get(a:, 0, 0)
-    if type_passed == 0
-        call CodeRunner#Message("No type passed")
-    else
-        call CodeRunner#Message("Type passed is ".a:1)
-    endif
 
     if g:code_runner_save_before_execute == 1
         write
     endif
+
     let cmd = CodeRunner#GetCommand(&ft)
     if empty(cmd)
         call CodeRunner#Error("Unknow File Type: " . &ft . "!")
@@ -168,7 +170,8 @@ function! CodeRunner#CodeRunner(...) abort
 
     call CodeRunner#Message("Running ".cmd)
 
-    let winName = "CodeRunner.out"
-    exec "belowright terminal ++shell ++rows=".g:code_runner_output_window_size." ".cmd.""
+    let options = {"term_name":"CodeRunner.out","term_rows":g:code_runner_output_window_size}
+    
+    belowright call term_start(cmd,options)
 endfunction
 
