@@ -1,3 +1,33 @@
+" Hold jobs info which contains
+" id: data => id is job id, data is data passed between jobs
+"   data contains a map with keys, cmd: string to the original command
+"       list: hold the list of commands separated in order of execution phases
+"       now: containing the cmd that is executing
+"       left: list containing the cmd that are still left to be executed
+"       buf: buf number of the terminal being used
+let s:tasks = {}
+
+function! CodeRunner#JobDone(job, status) abort
+    #exit if status is !=0
+    if a:status !=0
+        # get job cmd
+        let cmd = s:tasks[job]["cmd"]
+        CodeRunner#Message("Job for ".cmd." failed")
+        unlet s:tasks[job]
+        return
+    endif
+
+    # we go here if doesn't fail
+    #get next command and remove from list
+    let cmd = remove(s:tasks[job]["left"],0)
+
+endfunction
+
+function! CodeRunner#ExecuteCommand(cmd)
+    let options = {"term_name":"CodeRunner.out","term_rows":g:code_runner_output_window_size}
+    belowright call term_start(a:cmd,options)
+endfunction
+
 function! CodeRunner#Error(message) abort
     echohl ErrorMsg | echomsg "[CodeRunner] Error: ".a:message | echohl None
 endfunction
@@ -169,9 +199,6 @@ function! CodeRunner#CodeRunner(...) abort
     endif
 
     call CodeRunner#Message("Running ".cmd)
-
-    let options = {"term_name":"CodeRunner.out","term_rows":g:code_runner_output_window_size}
-    
-    belowright call term_start(cmd,options)
+    call CodeRunner#ExecuteCommand(cmd)
 endfunction
 
