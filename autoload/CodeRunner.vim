@@ -1,31 +1,12 @@
-" Hold jobs info which contains
-" id: data => id is job id, data is data passed between jobs
-"   data contains a map with keys, cmd: string to the original command
-"       list: hold the list of commands separated in order of execution phases
-"       now: containing the cmd that is executing
-"       left: list containing the cmd that are still left to be executed
-"       buf: buf number of the terminal being used
-let s:tasks = {}
 
-function! CodeRunner#JobDone(job, status) abort
-    #exit if status is !=0
-    if a:status !=0
-        # get job cmd
-        let cmd = s:tasks[job]["cmd"]
-        CodeRunner#Message("Job for ".cmd." failed")
-        unlet s:tasks[job]
-        return
-    endif
-
-    # we go here if doesn't fail
-    #get next command and remove from list
-    let cmd = remove(s:tasks[job]["left"],0)
-
-endfunction
-
-function! CodeRunner#ExecuteCommand(cmd)
+" Takes an ID, if a new job the pass 0 here, and also
+" takes a cmd to execute
+function! CodeRunner#ExecuteCommand(jobId,cmd)
     let options = {"term_name":"CodeRunner.out","term_rows":g:code_runner_output_window_size}
-    belowright call term_start(a:cmd,options)
+    if(a:jobId == 0)
+        
+       belowright let buf = term_start(a:cmd,options)
+    endif
 endfunction
 
 function! CodeRunner#Error(message) abort
@@ -63,7 +44,7 @@ function! CodeRunner#GetCommand(type) abort
     endif
 
     " Replace variables
-    let dirPath = expand('%:h') . '/'
+    let dirPath = getcwd()
     let fileNameWithoutExt = expand('%:t:r')
     let fileName = expand('%:t')
 
@@ -186,19 +167,19 @@ endfunction
 
 
 function! CodeRunner#CodeRunner(...) abort
-    let type_passed = get(a:, 0, 0)
+    let type_passed = get(a:, 1, &ft)
 
     if g:code_runner_save_before_execute == 1
         write
     endif
 
-    let cmd = CodeRunner#GetCommand(&ft)
+    let cmd = CodeRunner#GetCommand(type_passed)
     if empty(cmd)
-        call CodeRunner#Error("Unknow File Type: " . &ft . "!")
+        call CodeRunner#Error("Unknow File Type: " . type_passed . "!")
         return
     endif
 
     call CodeRunner#Message("Running ".cmd)
-    call CodeRunner#ExecuteCommand(cmd)
+    call CodeRunner#ExecuteCommand(0,cmd)
 endfunction
 
