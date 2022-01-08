@@ -44,7 +44,7 @@ function! CodeRunner#GetCommand(type) abort
     endif
 
     " Replace variables
-    let dirPath = getcwd()
+    let dirPath = CodeRunner#BackToForwardSlash(getcwd())
     let fileNameWithoutExt = expand('%:t:r')
     let fileName = expand('%:t')
 
